@@ -15,20 +15,20 @@ intents.emojis = True
 intents.typing = True
 intents.invites = True
 
-client = discord.Client(intents=intents)
+bot = discord.Client(intents=intents)
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    print(f'We have logged in as {bot.user}')
 
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
 
     if message.content.startswith('-hello'):
         await message.channel.send('Hello!')
 
-client.run('TOKEN')
+bot.run('TOKEN')
