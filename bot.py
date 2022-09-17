@@ -30,7 +30,7 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    if message.content.startswith('-hello'):
-        await message.channel.send('Hello!')
+    if message.content.startswith('cookie'):
+        await message.channel.send(':cookie:')
 
 bot.run(TOKEN)
