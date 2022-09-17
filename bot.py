@@ -4,7 +4,7 @@ from discord.ext import commands
 import asyncio
 import os
 
-token = os.getenv("TOKEN")
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
 intents.members = True
@@ -33,4 +33,4 @@ async def on_message(message):
     if message.content.startswith('-hello'):
         await message.channel.send('Hello!')
 
-bot.run(token)
+bot.run(TOKEN)
