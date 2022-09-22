@@ -48,17 +48,18 @@ class Button1(ui.Modal, title="Név megadása"):
 
 
 class Button1View(ui.View):
-    super().__init__(timeout=None)
+    def __init__(self):
+        super().__init__(timeout=None)
 
-    @discord.ui.button(
-        label="😎 Név megadása",
-        style=discord.ButtonStyle.primary,
-        custom_id="button1",
-    )
-    async def button_callback(
-        self, inter: discord.Interaction, button: discord.ui.Button
-    ):
-        await inter.response.send_modal(Button1())
+        @discord.ui.button(
+            label="😎 Név megadása",
+            style=discord.ButtonStyle.primary,
+            custom_id="button1",
+        )
+        async def button_callback(
+            self, inter: discord.Interaction, button: discord.ui.Button
+        ):
+            await inter.response.send_modal(Button1())
 
 
 class Dropdown(ui.Select):
@@ -110,58 +111,60 @@ class DropdownView(ui.View):
 
 
 class Button2View(ui.View):
-    super().__init__(timeout=None)
+    def __init__(self):
+        super().__init__(timeout=None)
 
-    @discord.ui.button(
-        label="🟣 OT kérelem", style=discord.ButtonStyle.secondary, custom_id="button2"
-    )
-    async def button_callback(
-        self, inter: discord.Interaction, button: discord.ui.Button
-    ):
-        e = discord.Embed(
-            title="OT kérelem",
-            description="",
-            color=discord.Color.purple(),
+        @discord.ui.button(
+            label="🟣 OT kérelem", style=discord.ButtonStyle.secondary, custom_id="button2"
         )
-        global user_to_ot
-        user_to_ot = inter.user
-        e.set_author(name=user_to_ot.name, icon_url=user_to_ot.avatar.url)
-        await LOG_CHANNEL.send(
-            embed=e,
-            view=Button3View(),
-        )
-        await inter.response.send_message("Kérelem elküldve!", ephemeral=True)
+        async def button_callback(
+            self, inter: discord.Interaction, button: discord.ui.Button
+        ):
+            e = discord.Embed(
+                title="OT kérelem",
+                description="",
+                color=discord.Color.purple(),
+            )
+            global user_to_ot
+            user_to_ot = inter.user
+            e.set_author(name=user_to_ot.name, icon_url=user_to_ot.avatar.url)
+            await LOG_CHANNEL.send(
+                embed=e,
+                view=Button3View(),
+            )
+            await inter.response.send_message("Kérelem elküldve!", ephemeral=True)
 
 
 class Button3View(ui.View):
-    super().__init__(timeout=None)
+    def __init__(self):
+        super().__init__(timeout=None)
 
-    @discord.ui.button(
-        label="👍 Elfogadás", style=discord.ButtonStyle.success, custom_id="buttonaccept"
-    )
-    async def button_callback(
-        self, inter: discord.Interaction, button: discord.ui.Button
-    ):
-        if OT_ROLE in inter.user.roles or inter.user == OWNER:
-            await user_to_ot.add_roles(OT_ROLE)
-            await inter.response.send_message(
-                f"{user_to_ot.mention} OT kérelmét {inter.user.mention} elfogadta",
-                ephemeral=False,
-            )
-            self.stop()
+        @discord.ui.button(
+            label="👍 Elfogadás", style=discord.ButtonStyle.success, custom_id="buttonaccept"
+        )
+        async def button_callback(
+            self, inter: discord.Interaction, button: discord.ui.Button
+        ):
+            if OT_ROLE in inter.user.roles or inter.user == OWNER:
+                await user_to_ot.add_roles(OT_ROLE)
+                await inter.response.send_message(
+                    f"{user_to_ot.mention} OT kérelmét {inter.user.mention} elfogadta",
+                    ephemeral=False,
+                )
+                self.stop()
 
-    @discord.ui.button(
-        label="👎 Elvetés", style=discord.ButtonStyle.danger, custom_id="buttonreject"
-    )
-    async def button_callback_decline(
-        self, inter: discord.Interaction, button: discord.ui.Button
-    ):
-        if OT_ROLE in inter.user.roles or inter.user == OWNER:
-            await inter.response.send_message(
-                f"{user_to_ot.mention} OT kérelmét {inter.user.mention} elutasította",
-                ephemeral=False,
-            )
-            self.stop()
+        @discord.ui.button(
+            label="👎 Elvetés", style=discord.ButtonStyle.danger, custom_id="buttonreject"
+        )
+        async def button_callback_decline(
+            self, inter: discord.Interaction, button: discord.ui.Button
+        ):
+            if OT_ROLE in inter.user.roles or inter.user == OWNER:
+                await inter.response.send_message(
+                    f"{user_to_ot.mention} OT kérelmét {inter.user.mention} elutasította",
+                    ephemeral=False,
+                )
+                self.stop()
 
 
 class Bot(commands.Bot):
