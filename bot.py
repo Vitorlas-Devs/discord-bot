@@ -24,6 +24,7 @@ class Button1(ui.Modal, title="Név megadása"):
         required=True,
         placeholder="Bartók Béla",
         style=discord.TextStyle.paragraph,
+        custom_id="namemodal",
     )
     grade = ui.TextInput(label="Osztály", placeholder="9A", required=False)
 
@@ -46,12 +47,11 @@ class Button1(ui.Modal, title="Név megadása"):
             )
 
 
-class Button1View(ui.View):
+class Button1View(ui.View, timeout=None):
     @discord.ui.button(
         label="😎 Név megadása",
         style=discord.ButtonStyle.primary,
-        custom_id="button1view",
-        timeout=None,
+        custom_id="button1",
     )
     async def button_callback(
         self, inter: discord.Interaction, button: discord.ui.Button
@@ -81,7 +81,7 @@ class Dropdown(ui.Select):
             min_values=1,
             max_values=len(options),
             options=options,
-            timeout=None,
+            custom_id="dropdown",
         )
 
     async def callback(self, inter: discord.Interaction):
@@ -103,13 +103,13 @@ class Dropdown(ui.Select):
 
 class DropdownView(ui.View):
     def __init__(self):
-        super().__init__(timeout=None, custom_id="dropdown1view")
+        super().__init__(timeout=None)
         self.add_item(Dropdown())
 
 
-class Button2View(ui.View):
+class Button2View(ui.View, timeout=None):
     @discord.ui.button(
-        label="🟣 OT kérelem", style=discord.ButtonStyle.secondary, timeout=None, custom_id="button2view",
+        label="🟣 OT kérelem", style=discord.ButtonStyle.secondary, custom_id="button2"
     )
     async def button_callback(
         self, inter: discord.Interaction, button: discord.ui.Button
@@ -129,9 +129,9 @@ class Button2View(ui.View):
         await inter.response.send_message("Kérelem elküldve!", ephemeral=True)
 
 
-class Button3View(ui.View):
+class Button3View(ui.View, timeout=None):
     @discord.ui.button(
-        label="👍 Elfogadás", style=discord.ButtonStyle.success, timeout=None
+        label="👍 Elfogadás", style=discord.ButtonStyle.success, custom_id="buttonaccept"
     )
     async def button_callback(
         self, inter: discord.Interaction, button: discord.ui.Button
@@ -145,7 +145,7 @@ class Button3View(ui.View):
             self.stop()
 
     @discord.ui.button(
-        label="👎 Elvetés", style=discord.ButtonStyle.danger, timeout=None
+        label="👎 Elvetés", style=discord.ButtonStyle.danger, custom_id="buttonreject"
     )
     async def button_callback_decline(
         self, inter: discord.Interaction, button: discord.ui.Button
