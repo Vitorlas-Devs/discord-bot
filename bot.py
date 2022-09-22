@@ -18,7 +18,7 @@ MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 
-class Button1(ui.Modal, title="Név megadása", timeout=None):
+class Button1(ui.Modal, title="Név megadása"):
     name = ui.TextInput(
         label="Név",
         required=True,
