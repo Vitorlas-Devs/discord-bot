@@ -47,7 +47,9 @@ class Button1(ui.Modal, title="Név megadása"):
             )
 
 
-class Button1View(ui.View, timeout=None):
+class Button1View(ui.View):
+    super().__init__(timeout=None)
+
     @discord.ui.button(
         label="😎 Név megadása",
         style=discord.ButtonStyle.primary,
@@ -107,7 +109,9 @@ class DropdownView(ui.View):
         self.add_item(Dropdown())
 
 
-class Button2View(ui.View, timeout=None):
+class Button2View(ui.View):
+    super().__init__(timeout=None)
+
     @discord.ui.button(
         label="🟣 OT kérelem", style=discord.ButtonStyle.secondary, custom_id="button2"
     )
@@ -129,7 +133,9 @@ class Button2View(ui.View, timeout=None):
         await inter.response.send_message("Kérelem elküldve!", ephemeral=True)
 
 
-class Button3View(ui.View, timeout=None):
+class Button3View(ui.View):
+    super().__init__(timeout=None)
+
     @discord.ui.button(
         label="👍 Elfogadás", style=discord.ButtonStyle.success, custom_id="buttonaccept"
     )
