@@ -97,7 +97,6 @@ class Button1(ui.Modal, title="Név megadása"):
         required=True,
         placeholder="Bartók Béla",
         style=discord.TextStyle.paragraph,
-        custom_id="namemodal",
     )
     grade = ui.TextInput(label="Osztály", placeholder="9A", required=False)
 
@@ -127,7 +126,6 @@ class Button1View(ui.View):
         @discord.ui.button(
             label="😎 Név megadása",
             style=discord.ButtonStyle.primary,
-            custom_id="button1",
         )
         async def button_callback(
             self, inter: discord.Interaction, button: discord.ui.Button
@@ -157,7 +155,6 @@ class Dropdown(ui.Select):
             min_values=1,
             max_values=len(options),
             options=options,
-            custom_id="dropdown",
         )
 
     async def callback(self, inter: discord.Interaction):
@@ -188,7 +185,7 @@ class Button2View(ui.View):
         super().__init__(timeout=None)
 
         @discord.ui.button(
-            label="🟣 OT kérelem", style=discord.ButtonStyle.secondary, custom_id="button2"
+            label="🟣 OT kérelem", style=discord.ButtonStyle.secondary
         )
         async def button_callback(
             self, inter: discord.Interaction, button: discord.ui.Button
@@ -213,7 +210,7 @@ class Button3View(ui.View):
         super().__init__(timeout=None)
 
         @discord.ui.button(
-            label="👍 Elfogadás", style=discord.ButtonStyle.success, custom_id="buttonaccept"
+            label="👍 Elfogadás", style=discord.ButtonStyle.success
         )
         async def button_callback(
             self, inter: discord.Interaction, button: discord.ui.Button
@@ -227,7 +224,7 @@ class Button3View(ui.View):
                 self.stop()
 
         @discord.ui.button(
-            label="👎 Elvetés", style=discord.ButtonStyle.danger, custom_id="buttonreject"
+            label="👎 Elvetés", style=discord.ButtonStyle.danger
         )
         async def button_callback_decline(
             self, inter: discord.Interaction, button: discord.ui.Button
