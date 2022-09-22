@@ -177,9 +177,9 @@ class Bot(commands.Bot):
     async def setup_hook(self):
         self.tree.copy_global_to(guild=MY_GUILD)
         await self.tree.sync(guild=MY_GUILD)
-        await self.add_view(Button1View())
-        await self.add_view(DropdownView())
-        await self.add_view(Button2View())
+        self.add_view(Button1View())
+        self.add_view(DropdownView())
+        self.add_view(Button2View())
 
 
 # Discord Intent-ek beállítása, ezekkel adunk a botnak jogosultságokat
