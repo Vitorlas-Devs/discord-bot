@@ -232,7 +232,7 @@ async def setup(ctx):
         color=0x2F3136,
     )
     await PORTA_CHANNEL.send(
-        file=discord.File("\img\jedlik_banner.png", filename="jedlik_banner.png"),
+        file=discord.File("root/discord-bot/img/jedlik_banner.png", filename="jedlik_banner.png"),
         embed=embed1,
     )
 
