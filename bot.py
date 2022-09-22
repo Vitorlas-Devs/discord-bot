@@ -18,79 +18,6 @@ MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 
-
-class Bot(commands.Bot):
-    """Bot regisztrálása"""
-
-    def __init__(self, *, command_prefix: str, intents: discord.Intents):
-        super().__init__(command_prefix, intents=intents)
-
-    # slash command-ok felvétele
-    async def setup_hook(self):
-        self.tree.copy_global_to(guild=MY_GUILD)
-        await self.tree.sync(guild=MY_GUILD)
-
-
-# Discord Intent-ek beállítása, ezekkel adunk a botnak jogosultságokat
-intents = discord.Intents.default()
-intents.presences = True
-intents.members = True
-intents.message_content = True
-# bot létrehozása
-bot = Bot(command_prefix="-", intents=intents)
-
-
-@bot.event
-async def on_ready():
-    """A Bot on_ready eseménye a bot bekapcsolása után fut le, ekkor adjuk meg a globális változókat"""
-    global LYEDLIK, OT_ROLE, DEV_ROLE, TAG_ROLE, DÖK_ROLE, JEDLIK_ROLE, VETERÁN_ROLE, KÜLSŐS_ROLE, PORTA_CHANNEL, LOG_CHANNEL, OWNER
-    LYEDLIK = bot.get_guild(1015997406443229204)
-
-    OT_ROLE = LYEDLIK.get_role(1018451182131355728)
-    DEV_ROLE = LYEDLIK.get_role(1018451781774225470)
-    TAG_ROLE = LYEDLIK.get_role(1019936616262942771)
-    DÖK_ROLE = LYEDLIK.get_role(1015998890102763602)
-    JEDLIK_ROLE = LYEDLIK.get_role(1019649131712618558)
-    VETERÁN_ROLE = LYEDLIK.get_role(1019649352374947890)
-    KÜLSŐS_ROLE = LYEDLIK.get_role(1019649458461495356)
-
-    PORTA_CHANNEL = LYEDLIK.get_channel(1015997407265304688)
-    LOG_CHANNEL = LYEDLIK.get_channel(1019666689610227834)
-
-    OWNER = bot.get_user(361534796830081024)
-
-    await bot.change_presence(
-        status=discord.Status.online,
-        activity=discord.Streaming(
-            name="Matekházi írás", url="https://www.twitch.tv/discord"
-        ),
-    )
-    print(f"Logged in as {bot.user} in {LYEDLIK.name}")
-    print("------")
-
-
-@bot.event
-async def on_member_join(member):
-    """on_member_join esemény: amikor egy új tag csatlakozik a szerverhez, kap egy Role-t"""
-    await member.add_roles(TAG_ROLE)
-
-
-mod_group = app_commands.Group(name="mod", description="Mod group")
-
-
-@app_commands.default_permissions(manage_messages=True)
-class ModGroup(app_commands.Group):
-    bot.tree.add_command(mod_group)
-
-
-dev_group = app_commands.Group(name="dev", description="Dev group")
-
-
-@app_commands.default_permissions(view_audit_log=True)
-class DevGroup(app_commands.Group):
-    bot.tree.add_command(dev_group)
-
-
 class Button1(ui.Modal, title="Név megadása"):
     name = ui.TextInput(
         label="Név",
@@ -191,9 +118,7 @@ class Button2View(ui.View):
             embed=e,
             view=Button3View(),
         )
-        await inter.response.send_message(
-            "Kérelem elküldve!", ephemeral=True
-        )
+        await inter.response.send_message("Kérelem elküldve!", ephemeral=True)
 
 
 class Button3View(ui.View):
@@ -219,6 +144,82 @@ class Button3View(ui.View):
                 ephemeral=False,
             )
             self.stop()
+
+
+class Bot(commands.Bot):
+    """Bot regisztrálása"""
+
+    def __init__(self, *, command_prefix: str, intents: discord.Intents):
+        super().__init__(command_prefix, intents=intents)
+
+    # slash command-ok felvétele
+    async def setup_hook(self):
+        self.tree.copy_global_to(guild=MY_GUILD)
+        await self.tree.sync(guild=MY_GUILD)
+        await self.add_view(Button1View())
+        await self.add_view(DropdownView())
+        await self.add_view(Button2View())
+
+
+# Discord Intent-ek beállítása, ezekkel adunk a botnak jogosultságokat
+intents = discord.Intents.default()
+intents.presences = True
+intents.members = True
+intents.message_content = True
+# bot létrehozása
+bot = Bot(command_prefix="-", intents=intents)
+
+
+@bot.event
+async def on_ready():
+    """A Bot on_ready eseménye a bot bekapcsolása után fut le, ekkor adjuk meg a globális változókat"""
+    global LYEDLIK, OT_ROLE, DEV_ROLE, TAG_ROLE, DÖK_ROLE, JEDLIK_ROLE, VETERÁN_ROLE, KÜLSŐS_ROLE, PORTA_CHANNEL, LOG_CHANNEL, OWNER
+    LYEDLIK = bot.get_guild(1015997406443229204)
+
+    OT_ROLE = LYEDLIK.get_role(1018451182131355728)
+    DEV_ROLE = LYEDLIK.get_role(1018451781774225470)
+    TAG_ROLE = LYEDLIK.get_role(1019936616262942771)
+    DÖK_ROLE = LYEDLIK.get_role(1015998890102763602)
+    JEDLIK_ROLE = LYEDLIK.get_role(1019649131712618558)
+    VETERÁN_ROLE = LYEDLIK.get_role(1019649352374947890)
+    KÜLSŐS_ROLE = LYEDLIK.get_role(1019649458461495356)
+
+    PORTA_CHANNEL = LYEDLIK.get_channel(1015997407265304688)
+    LOG_CHANNEL = LYEDLIK.get_channel(1019666689610227834)
+
+    OWNER = bot.get_user(361534796830081024)
+
+    await bot.change_presence(
+        status=discord.Status.online,
+        activity=discord.Streaming(
+            name="Matekházi írás", url="https://www.twitch.tv/discord"
+        ),
+    )
+    print(f"Logged in as {bot.user} in {LYEDLIK.name}")
+    print("------")
+
+
+@bot.event
+async def on_member_join(member):
+    """on_member_join esemény: amikor egy új tag csatlakozik a szerverhez, kap egy Role-t"""
+    await member.add_roles(TAG_ROLE)
+
+
+mod_group = app_commands.Group(name="mod", description="Mod group")
+
+
+@app_commands.default_permissions(manage_messages=True)
+class ModGroup(app_commands.Group):
+    bot.tree.add_command(mod_group)
+
+
+dev_group = app_commands.Group(name="dev", description="Dev group")
+
+
+@app_commands.default_permissions(view_audit_log=True)
+class DevGroup(app_commands.Group):
+    bot.tree.add_command(dev_group)
+
 
 
 @bot.command()
