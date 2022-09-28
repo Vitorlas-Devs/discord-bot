@@ -1,9 +1,8 @@
-# Ez a sor a pylint errorok elkerülésére szolgál
-# pylint: disable=E0237, W0621, W0601, W0611, W1401, C2401, C0301, C0114
-
 # modulok importálása
 import asyncio
+import datetime
 import os
+import re
 from typing import Optional, List, Literal
 import discord
 from discord import app_commands
@@ -75,6 +74,7 @@ async def on_member_join(member):
 
 
 mod_group = app_commands.Group(name="mod", description="Mod group")
+dev_group = app_commands.Group(name="dev", description="Dev group")
 
 
 @app_commands.default_permissions(manage_messages=True)
@@ -82,16 +82,12 @@ class ModGroup(app_commands.Group):
     bot.tree.add_command(mod_group)
 
 
-dev_group = app_commands.Group(name="dev", description="Dev group")
-
-
 @app_commands.default_permissions(view_audit_log=True)
 class DevGroup(app_commands.Group):
     bot.tree.add_command(dev_group)
 
 
-
-class Button1(ui.Modal, title="Név megadása"):
+class Button1Modal(ui.Modal, title="Név megadása"):
     name = ui.TextInput(
         label="Név",
         required=True,
@@ -101,18 +97,19 @@ class Button1(ui.Modal, title="Név megadása"):
     grade = ui.TextInput(label="Osztály", placeholder="9A", required=False)
 
     async def on_submit(self, inter: discord.Interaction):
+        grade_str = re.sub("[\W_]+", "", self.grade.value).upper().strip()
         await inter.user.edit(nick=self.name.value)
-        if len(self.grade.value) < 2:
+        if len(grade_str) < 2:
             await inter.response.send_message(
                 "Név megadva osztály nélkül!", ephemeral=True
             )
         else:
-            role = discord.utils.get(LYEDLIK.roles, name=self.grade.value)
+            role = discord.utils.get(LYEDLIK.roles, name=grade_str)
             if role in LYEDLIK.roles:
                 await inter.user.add_roles(role)
             else:
-                role = await LYEDLIK.create_role(name=self.grade.value)
-                await role.edit(position=DEV_ROLE.position + 1)  # clunky
+                role = await LYEDLIK.create_role(name=grade_str)
+                await role.edit(position=DEV_ROLE.position - 2)  # clunky
                 await inter.user.add_roles(role)
             await inter.response.send_message(
                 "Sikeres név megadás osztállyal!", ephemeral=True
@@ -130,30 +127,30 @@ class Button1View(ui.View):
     async def button_callback(
         self, inter: discord.Interaction, button: discord.ui.Button
     ):
-        await inter.response.send_modal(Button1())
+        await inter.response.send_modal(Button1Modal())
 
 
-class Dropdown(ui.Select):
+class Dropdown1(ui.Select):
     def __init__(self):
         options = [
             discord.SelectOption(
                 label="Jedlik", description="Módos Gábor a királyunk", emoji="🔵"
             ),
-            discord.SelectOption(label="DÖK", description="DÖK-ös vagyok", emoji="🟡"),
             discord.SelectOption(
-                label="Veterán", description="Voltam jedlikes", emoji="🟢"
+                label="Veterán",
+                description="Voltam jedlikes, már nem járok oda",
+                emoji="🟢",
             ),
             discord.SelectOption(
                 label="Külsős",
                 description="Nem vagyok jedlikes és nem is voltam",
                 emoji="🟩",
             ),
-            discord.SelectOption(label="DEV", description="(●'◡'●)", emoji="🔴"),
         ]
         super().__init__(
-            placeholder="Válaszd ki azokat, amelyek rád illenek *többes szám*",
+            placeholder="Add meg a jedlikességedet!",
             min_values=1,
-            max_values=len(options),
+            max_values=1,
             options=options,
         )
 
@@ -162,9 +159,27 @@ class Dropdown(ui.Select):
             await inter.user.add_roles(JEDLIK_ROLE)
         if "Veterán" in self.values:
             await inter.user.add_roles(VETERÁN_ROLE)
-            await inter.user.remove_roles(JEDLIK_ROLE)
         if "Külsős" in self.values:
             await inter.user.add_roles(KÜLSŐS_ROLE)
+        await inter.response.send_message(
+            f"A választásaid rögzítve: {self.values}", ephemeral=True
+        )
+
+
+class Dropdown2(ui.Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="DEV", description="(●'◡'●)", emoji="🔴"),
+            discord.SelectOption(label="DÖK", description="DÖK-ös vagyok", emoji="🟡"),
+        ]
+        super().__init__(
+            placeholder="Válaszd ki azokat, amelyek rádillenek *többes szám*",
+            min_values=1,
+            max_values=len(options),
+            options=options,
+        )
+
+    async def callback(self, inter: discord.Interaction):
         if "DÖK" in self.values:
             await inter.user.add_roles(DÖK_ROLE)
         if "DEV" in self.values:
@@ -177,28 +192,29 @@ class Dropdown(ui.Select):
 class DropdownView(ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.add_item(Dropdown())
+        self.add_item(Dropdown2())
+        self.add_item(Dropdown1())
 
 
 class Button2View(ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(
-        label="🟣 OT kérelem", style=discord.ButtonStyle.secondary
-    )
+    @discord.ui.button(label="🟣 OT kérelem", style=discord.ButtonStyle.secondary)
     async def button_callback(
         self, inter: discord.Interaction, button: discord.ui.Button
     ):
+        global USER_TO_OT
+        USER_TO_OT = inter.user
+
         e = discord.Embed(
             title="OT kérelem",
-            description="",
+            description=USER_TO_OT.mention,
             color=discord.Color.purple(),
         )
-        global user_to_ot
-        user_to_ot = inter.user
-        e.set_author(name=user_to_ot.name, icon_url=user_to_ot.avatar.url)
+        e.set_author(name=USER_TO_OT.name, icon_url=USER_TO_OT.avatar.url)
         await LOG_CHANNEL.send(
+            OWNER.mention,
             embed=e,
             view=Button3View(),
         )
@@ -209,34 +225,28 @@ class Button3View(ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(
-        label="👍 Elfogadás", style=discord.ButtonStyle.success
-    )
+    @discord.ui.button(label="👍 Elfogadás", style=discord.ButtonStyle.success)
     async def button_callback(
         self, inter: discord.Interaction, button: discord.ui.Button
     ):
         if OT_ROLE in inter.user.roles or inter.user == OWNER:
-            await user_to_ot.add_roles(OT_ROLE)
+            await USER_TO_OT.add_roles(OT_ROLE)
             await inter.response.send_message(
-                f"{user_to_ot.mention} OT kérelmét {inter.user.mention} elfogadta",
+                f"{USER_TO_OT.mention} OT kérelmét {inter.user.mention} elfogadta",
                 ephemeral=False,
             )
             self.stop()
 
-    @discord.ui.button(
-        label="👎 Elvetés", style=discord.ButtonStyle.danger
-    )
+    @discord.ui.button(label="👎 Elvetés", style=discord.ButtonStyle.danger)
     async def button_callback_decline(
         self, inter: discord.Interaction, button: discord.ui.Button
     ):
         if OT_ROLE in inter.user.roles or inter.user == OWNER:
             await inter.response.send_message(
-                f"{user_to_ot.mention} OT kérelmét {inter.user.mention} elutasította",
+                f"{USER_TO_OT.mention} OT kérelmét {inter.user.mention} elutasította",
                 ephemeral=False,
             )
             self.stop()
-
-
 
 
 @bot.command()
@@ -245,18 +255,18 @@ async def setup(ctx):
     """Regisztrációhoz szükséges embed"""
     await ctx.message.delete()
     embed1 = discord.Embed(
-        title="Üdv a Jedlik szerveren!",
+        title="Üdv a Jedlik szerverén!",
         description=":white_small_square: **Ahhoz, hogy hozzáférj a szerver többi részéhez is, a következő \nlépéseken kell végigmenj:**\n\n:one: - Teljes név és osztály megadása\n:two: - Szerver szerepkörök kiválasztása",
         color=0x2F3136,
     )
     await PORTA_CHANNEL.send(
-        file=discord.File("./img/jedlik_banner.png", filename="jedlik_banner.png"),
+        file=discord.File("img\jedlik_banner.png", filename="jedlik_banner.png"),
         embed=embed1,
     )
 
     embed6 = discord.Embed(
         title=":purple_square: - OT vagyok",
-        description=":white_small_square: Csak OT-nak: katt a gombra!",
+        description=":white_small_square: Csak OT tagoknak: katt a gombra!",
         color=discord.Color.purple(),
     )
     view5 = Button2View()
@@ -264,7 +274,7 @@ async def setup(ctx):
 
     embed2 = discord.Embed(
         title=":one: - Teljes név és osztály megadása",
-        description=":white_small_square: Ez az üzenet alatt lévő gombra kattintás után a felugró ablakban adhatod meg a neved.\n__Az osztályt csak a jedlikeseknek kell beírni.__",
+        description=":white_small_square: Ez az üzenet alatt lévő gombra kattintás után a felugró ablakban adhatod meg a neved.\n\n__Az osztályt csak a jedlikeseknek kell beírni,__ ha nem jársz ide akkor hagyd üresen!",
         color=0xED033D,
     )
     view1 = Button1View()
@@ -288,7 +298,7 @@ async def setup(ctx):
 
     embed5 = discord.Embed(
         title=":two: - Szerepkörök kiválasztása",
-        description=f":white_small_square: Ez az üzenet alatt lévő menüben választhatod ki a hozzád tartozó Role-okat.\n{JEDLIK_ROLE.mention}: Jelenleg jedlikes tanulók\n{DÖK_ROLE.mention}: DÖK-ös szobákhoz hozzáférés\n{VETERÁN_ROLE.mention}: Volt jedlikes tanulók **(A Jedlikes role-t megkapod automatikusan emellé)**\n{KÜLSŐS_ROLE.mention}: Nem jedlikes tanulók\n{DEV_ROLE.mention}: Ha érdekel a Python és a Discord botok programozása, akkor itt csatlakozhatsz a Lyedlik Devs-hez!",
+        description=f":white_small_square: Ez az üzenet alatt lévő menüben választhatod ki a hozzád tartozó Role-okat.\n\n**Kiegészítő Role-ok:**\n{DEV_ROLE.mention}: Ha érdekel a Python és a Discord botok programozása, akkor itt csatlakozhatsz a Lyedlik Devs-hez!\n{DÖK_ROLE.mention}: DÖK-ös szobákhoz hozzáférés\n\n**Jedlikesség mértéke:**\n:warning: Ezt add meg utoljára thanks.\n:information_source: Ebből egy választása kötelező a regisztrációhoz!\n{JEDLIK_ROLE.mention}: Jelenleg jedlikes tanulók\n{VETERÁN_ROLE.mention}: Volt jedlikes tanulók\n{KÜLSŐS_ROLE.mention}: Nem jedlikesek",
         color=0x0596F7,
     )
     view4 = DropdownView()
@@ -349,6 +359,10 @@ async def embed(
         description=description,
         color=discord.Color.from_str(colors[color]),
     )
+    embed.set_footer(
+        text=f"{bot.user.display_name} | {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        icon_url=bot.user.display_avatar.url,
+    )
     await inter.response.send_message(embed=embed)
 
 
@@ -378,8 +392,8 @@ async def embed(
 @app_commands.checks.has_permissions(manage_messages=True)
 async def clear(inter: discord.Interaction, amount: Optional[int] = 1):
     """Töröl egy megadott mennyiségű üzenetet"""
-    await inter.channel.purge(limit=amount)
     await inter.response.send_message(f"{amount} üzenet törölve.", ephemeral=False)
+    await inter.channel.purge(limit=amount)
     await asyncio.sleep(3)
     await inter.delete_original_response()
 
@@ -421,6 +435,42 @@ async def slash_clear(inter: discord.Interaction):
     )
     bot.tree.clear_commands(guild=MY_GUILD)
     await bot.tree.sync(guild=MY_GUILD)
+
+
+class RoleGiverButtonView(ui.View):
+    @discord.ui.button(label=f"▶️ Kérem", style=discord.ButtonStyle.primary)
+    async def button_callback(
+        self, inter: discord.Interaction, button: discord.ui.Button
+    ):
+        await inter.user.add_roles(ROLEGIVER_ROLE)
+        await inter.response.send_message(
+            f"{inter.user.mention}, hozzáadva: {ROLEGIVER_ROLE.mention}",
+            ephemeral=True,
+        )
+
+
+@dev_group.command()
+@app_commands.describe(
+    role="A megadandó Role",
+)
+@app_commands.checks.has_permissions(view_audit_log=True)
+async def role_giver(inter: discord.Interaction, role: discord.Role):
+    """Elküld egy embedet egy gombbal, amivel Role-okat kapnak az emberek"""
+    e = discord.Embed(
+        title=f"Kattints a gombra a {role.name} Role-ért!",
+        description=role.mention,
+        color=role.color,
+    )
+    global ROLEGIVER_ROLE
+    ROLEGIVER_ROLE = role
+    e.set_author(name=inter.user.display_name, icon_url=inter.user.display_avatar.url)
+    e.set_footer(
+        text=f"{bot.user.display_name} | {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        icon_url=bot.user.display_avatar.url,
+    )
+    await inter.response.send_message(
+        embed=e, view=RoleGiverButtonView(), ephemeral=False
+    )
 
 
 @bot.command()
