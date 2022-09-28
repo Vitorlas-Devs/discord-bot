@@ -12,10 +12,10 @@ from discord import ui
 # from dotenv import load_dotenv
 # load_dotenv()
 
+img_folder = "./img/"
 
 MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
-
 
 class Bot(commands.Bot):
     """Bot regisztrálása"""
@@ -260,7 +260,7 @@ async def setup(ctx):
         color=0x2F3136,
     )
     await PORTA_CHANNEL.send(
-        file=discord.File("img\jedlik_banner.png", filename="jedlik_banner.png"),
+        file=discord.File(img_folder + "jedlik_banner.png", filename="jedlik_banner.png"),
         embed=embed1,
     )
 
