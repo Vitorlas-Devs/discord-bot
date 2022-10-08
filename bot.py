@@ -1,4 +1,5 @@
 import asyncio
+from asyncio import subprocess
 import calendar
 import datetime
 from pathlib import Path
@@ -103,6 +104,28 @@ async def on_scheduled_event_update(before, after):
             location=after.location,
         )
         await event_invite(after)
+
+
+@dev_group.command()
+@app_commands.checks.has_permissions(view_audit_log=True)
+async def restart(inter: discord.Interaction):
+    """Restart the bot (not for Test Bots)"""
+    try:
+        await inter.response.defer(ephemeral=False, thinking=True)
+        # use subprocess to restart the bot
+        # got to screen: bot
+        # git pull
+        # python3 bot.py
+        subprocess.run(["screen", "-r", "bot"])
+        subprocess.run("^C")
+        subprocess.run(["git", "pull"])
+        subprocess.run(["python3", "bot.py"])
+        await inter.response.send_message("Restarting...", ephemeral=False)
+
+    except Exception as e:
+        await inter.followup.send(f"Error: {e}", ephemeral=False)
+    finally:
+        await inter.followup.send(f"Bot újraindítva", ephemeral=False)
 
 
 class Button1Modal(ui.Modal, title="Név megadása"):
