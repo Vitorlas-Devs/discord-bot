@@ -1,5 +1,4 @@
 import asyncio
-import subprocess
 import signal
 import datetime
 from pathlib import Path
@@ -111,9 +110,9 @@ async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
-        # subprocess.run(["screen", "-r", "bot"])
-        await subprocess.run(["git", "pull"])
-        await subprocess.run(["python3", "bot.py"])
+        await asyncio.gather(
+            asyncio.run(["git", "pull"]), asyncio.run(["python3", "bot.py"])
+        )
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
@@ -327,7 +326,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention}",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
