@@ -112,16 +112,10 @@ async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
-        # use subprocess to restart the bot
-        # got to screen: bot
-        # git pull
-        # python3 bot.py
         subprocess.run(["screen", "-r", "bot"])
         subprocess.run("^C")
         subprocess.run(["git", "pull"])
         subprocess.run(["python3", "bot.py"])
-        await inter.response.send_message("Restarting...", ephemeral=False)
-
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
     finally:
