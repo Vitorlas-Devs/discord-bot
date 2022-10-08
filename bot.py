@@ -2,6 +2,7 @@ import asyncio
 import calendar
 import datetime
 from pathlib import Path
+import dotenv
 import pytz
 import os
 import re
@@ -10,14 +11,14 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord import ui
+from dotenv import load_dotenv
 
-# from dotenv import load_dotenv
-# load_dotenv()
+load_dotenv()
 
 img_folder = "img\\"
 
 MY_GUILD = discord.Object(id=1015997406443229204)
-TOKEN = "NTI2NzYzMDk4ODE2NjQzMDcy.GaA0d9.nvFrGve5jS8llFdV5_hycZJwIvDV1V5dPAhzzM"
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 # START CODING HERE
 
