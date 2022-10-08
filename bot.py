@@ -120,8 +120,8 @@ async def run(cmd):
 
 async def main():
     await asyncio.gather(
-        run(["git", "pull"]),
-        run(["python3", "bot.py"]),
+        run("git pull"),
+        run("python3 bot.py"),
     )
 
 
@@ -345,7 +345,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention}",
+        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
