@@ -105,7 +105,7 @@ async def on_scheduled_event_update(before, after):
 
 
 async def run(cmd):
-    proc = await asyncio.create_subprocess_shell(
+    await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
 
@@ -337,7 +337,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention}",
+        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
