@@ -345,7 +345,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294> <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
