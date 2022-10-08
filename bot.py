@@ -112,8 +112,8 @@ async def restart(inter: discord.Interaction):
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
         # subprocess.run(["screen", "-r", "bot"])
-        subprocess.run(["git", "pull"])
-        subprocess.run(["python3", "bot.py"])
+        await subprocess.run(["git", "pull"])
+        await subprocess.run(["python3", "bot.py"])
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
@@ -327,7 +327,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention}",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
