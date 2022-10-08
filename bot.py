@@ -112,6 +112,7 @@ async def restart(inter: discord.Interaction):
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
         os.kill(os.getpid(), signal.SIGINT)
+        # p
         subprocess.run(["screen", "-r", "bot"])
         subprocess.run(["git", "pull"])
         subprocess.run(["python3", "bot.py"])
