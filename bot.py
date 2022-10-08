@@ -4,6 +4,7 @@ import datetime
 from pathlib import Path
 import pytz
 import os
+import sys
 import re
 from typing import Optional, List, Literal
 import discord
@@ -123,8 +124,9 @@ async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
-        await main()
+        # await main()
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
+        os.execv(sys.executable, ["python3"] + sys.argv)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
 
@@ -337,7 +339,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention}",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
