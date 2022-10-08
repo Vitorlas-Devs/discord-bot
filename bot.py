@@ -126,6 +126,9 @@ async def restart(inter: discord.Interaction):
         await inter.response.defer(ephemeral=False, thinking=True)
         # await main()
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
+        print(sys.argv)
+        print(sys.executable)
+        os.execv(sys.executable, ["git pull"] + sys.argv)
         os.execv(sys.executable, ["python3"] + sys.argv)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
@@ -339,7 +342,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention}",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
