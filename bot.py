@@ -14,10 +14,10 @@ from discord import ui
 # from dotenv import load_dotenv
 # load_dotenv()
 
-img_folder = "./img/"
+img_folder = "img\\"
 
 MY_GUILD = discord.Object(id=1015997406443229204)
-TOKEN = os.getenv("DISCORD_TOKEN")
+TOKEN = "NTI2NzYzMDk4ODE2NjQzMDcy.GaA0d9.nvFrGve5jS8llFdV5_hycZJwIvDV1V5dPAhzzM"
 
 # START CODING HERE
 
