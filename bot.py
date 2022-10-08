@@ -111,7 +111,6 @@ async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
-        # stop process with cltr + c
         os.kill(os.getpid(), signal.CTRL_C_EVENT)
         subprocess.run(["screen", "-r", "bot"])
         subprocess.run(["git", "pull"])
