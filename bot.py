@@ -1,20 +1,22 @@
 import asyncio
+from asyncio import subprocess
 import calendar
 import datetime
 from pathlib import Path
+import dotenv
 import pytz
 import os
 import re
 from typing import Optional, List, Literal
 import discord
 from discord import app_commands
-from discord.ext import commands
 from discord import ui
+from discord.ext import commands
+from dotenv import load_dotenv
 
-# from dotenv import load_dotenv
-# load_dotenv()
+load_dotenv()
 
-img_folder = "./img/"
+img_folder = "img\\"
 
 MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -102,6 +104,22 @@ async def on_scheduled_event_update(before, after):
             location=after.location,
         )
         await event_invite(after)
+
+
+@dev_group.command()
+@app_commands.checks.has_permissions(view_audit_log=True)
+async def restart(inter: discord.Interaction):
+    """Restart the bot (not for Test Bots)"""
+    try:
+        await inter.response.defer(ephemeral=False, thinking=True)
+        subprocess.run(["screen", "-r", "bot"])
+        subprocess.run("^C")
+        subprocess.run(["git", "pull"])
+        subprocess.run(["python3", "bot.py"])
+    except Exception as e:
+        await inter.followup.send(f"Error: {e}", ephemeral=False)
+    finally:
+        await inter.followup.send(f"Bot újraindítva", ephemeral=False)
 
 
 class Button1Modal(ui.Modal, title="Név megadása"):
