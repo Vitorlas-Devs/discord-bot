@@ -1,5 +1,5 @@
 import asyncio
-import signal
+import git
 import datetime
 from pathlib import Path
 import pytz
@@ -106,9 +106,17 @@ async def on_scheduled_event_update(before, after):
 
 
 async def run(cmd):
-    await asyncio.create_subprocess_shell(
+    proc = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
+
+    stdout, stderr = await proc.communicate()
+
+    print(f'[{cmd!r} exited with {proc.returncode}]')
+    if stdout:
+        print(f'[stdout]\n{stdout.decode()}')
+    if stderr:
+        print(f'[stderr]\n{stderr.decode()}')
 
 
 async def main():
@@ -125,10 +133,9 @@ async def restart(inter: discord.Interaction):
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
         # await main()
+        g = git.cmd.Git("https://github.com/14A-A-Lyedlik-Devs/discord-bot")
+        g.pull()
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
-        print(sys.argv)
-        print(sys.executable)
-        os.execv(sys.executable, ["git pull"] + sys.argv)
         os.execv(sys.executable, ["python3"] + sys.argv)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
@@ -342,7 +349,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention}",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
