@@ -1,9 +1,7 @@
 import asyncio
-from asyncio import subprocess
-import calendar
 import datetime
+import subprocess
 from pathlib import Path
-import dotenv
 import pytz
 import os
 import re
