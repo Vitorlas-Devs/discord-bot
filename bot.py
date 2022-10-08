@@ -104,15 +104,34 @@ async def on_scheduled_event_update(before, after):
         await event_invite(after)
 
 
+async def run(cmd):
+    proc = await asyncio.create_subprocess_shell(
+        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
+
+    stdout, stderr = await proc.communicate()
+
+    print(f"[{cmd!r} exited with {proc.returncode}]")
+    if stdout:
+        print(f"[stdout]\n{stdout.decode()}")
+    if stderr:
+        print(f"[stderr]\n{stderr.decode()}")
+
+
+async def main():
+    await asyncio.gather(
+        run(["git", "pull"]),
+        run(["python3", "bot.py"]),
+    )
+
+
 @dev_group.command()
 @app_commands.checks.has_permissions(view_audit_log=True)
 async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
-        await asyncio.gather(
-            asyncio.run(["git", "pull"]), asyncio.run(["python3", "bot.py"])
-        )
+        asyncio.run(main())
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
@@ -326,7 +345,7 @@ async def setup(ctx):
 async def hello(inter: discord.Interaction):
     """Hi"""
     await inter.response.send_message(
-        f"Szeva, {inter.user.mention} <a:blobWiggle:1026168739810525294>",
+        f"Szeva, {inter.user.mention}",
         allowed_mentions=discord.AllowedMentions(users=False),
     )
 
