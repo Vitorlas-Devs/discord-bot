@@ -111,7 +111,7 @@ async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
-        subprocess.run(["screen", "-r", "bot"])
+        # subprocess.run(["screen", "-r", "bot"])
         subprocess.run(["git", "pull"])
         subprocess.run(["python3", "bot.py"])
         await inter.followup.send(f"Bot újraindítva", ephemeral=False)
