@@ -1,9 +1,8 @@
 import asyncio
-from asyncio import subprocess
-import calendar
+import subprocess
+import signal
 import datetime
 from pathlib import Path
-import dotenv
 import pytz
 import os
 import re
@@ -112,14 +111,14 @@ async def restart(inter: discord.Interaction):
     """Restart the bot (not for Test Bots)"""
     try:
         await inter.response.defer(ephemeral=False, thinking=True)
+        # stop process with cltr + c
+        os.kill(os.getpid(), signal.CTRL_C_EVENT)
         subprocess.run(["screen", "-r", "bot"])
-        subprocess.run("^C")
         subprocess.run(["git", "pull"])
         subprocess.run(["python3", "bot.py"])
+        await inter.followup.send(f"Bot újraindítva", ephemeral=False)
     except Exception as e:
         await inter.followup.send(f"Error: {e}", ephemeral=False)
-    finally:
-        await inter.followup.send(f"Bot újraindítva", ephemeral=False)
 
 
 class Button1Modal(ui.Modal, title="Név megadása"):
