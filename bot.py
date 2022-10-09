@@ -349,7 +349,7 @@ async def joined(inter: discord.Interaction, member: Optional[discord.Member] = 
     """Show when a member joined the server"""
     member = member or inter.user
     await inter.response.send_message(
-        f"> {member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
+        f"{member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
     )
 
 
@@ -357,7 +357,7 @@ async def joined(inter: discord.Interaction, member: Optional[discord.Member] = 
 async def show_join_date(inter: discord.Interaction, member: discord.Member):
     """Show when a member joined the server"""
     await inter.response.send_message(
-        f"> {member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
+        f"{member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
     )
 
 
