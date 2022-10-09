@@ -284,7 +284,7 @@ class Button3View(ui.View):
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def setup(ctx):
+async def setup_verify(ctx):
     """Verification embed in #porta for new users"""
     await ctx.message.delete()
     embed1 = discord.Embed(
@@ -322,6 +322,16 @@ async def setup(ctx):
     )
     view4 = DropdownView()
     await PORTA_CHANNEL.send(embed=embed5, view=view4)
+
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def setup_rules(ctx):
+    """Info in #infók"""
+    await ctx.message.delete()
+    await ctx.send(
+        "<:infoicon:1028664164664741948> **INFORMÁCIÓK**\nA szerver célja egy hasznos és fun hely biztosítása az egész Jedliknek.\n\n**SZOBÁK**\n<:texticon:1028666917575204905> **Text szobák:** Ezek az általános chat szobák, ahol üzeneteket lehet küldeni. A botok parancsait is itt érheted el egy perjel (`/`) után.\n<:voiceicon:1028666918665715723> **Voice szobák:** Itt lehet beszélgetni másokkal lényegében, akár kamerával is, emellett:\n__Képernyőmegosztás:__ Streamelheted az egész képernyődet, vagy csak egy alkalmazást (ilyenkor a hang is átjön).\n__Beépített chat:__ Minden voice szobához van egy beépített text szoba, ahova írhatod ha nem megy a mikrofonod.\n__Youtube Watch Together:__ Egyszerre tudsz másokkal videót nézni. Akinél van a távirányító az kezeli a lejátszást. Ez még nem mindenkinek érhető el.\n<:announcementicon:1028664163205132359> **Hír szobák:** Ezekre a helyekre rögzítjük a híreket, érdemes minden értesítést bekapcsolni.\n<:forumicon:1028666912856608798> **Fórum szobák:** A fórum szobákat használjuk a To-do rendszerhez, itt kártyákat (feladatokat) lehet felvenni, amik rendezetten áttekinthetők. Minden kártyához tartozik egy text chat, ahol beszélni lehet róla és kommenteket írni.\n<:stageicon:1028666915419340830> **Előadó szobák:** Speciális voice szobák, ahol csak pár ember beszél egyszerre, a többiek nem tudnak. Lehet \"jelentkezni\" (kézfeltartás gomb), és a hallgatók közül be is lehet húzni embereket az előadókhoz, hogy tudjanak beszélni.\n\n**SZEREPKÖRÖK**"
+    )
 
 
 @bot.tree.command()
