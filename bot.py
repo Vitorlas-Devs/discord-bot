@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-img_folder = "img\\"
+img_folder = "./img/"
 
 MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
