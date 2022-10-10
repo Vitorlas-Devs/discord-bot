@@ -283,7 +283,7 @@ class Button3View(ui.View):
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def setup(ctx):
+async def setup_verify(ctx):
     """Verification embed in #porta for new users"""
     await ctx.message.delete()
     embed1 = discord.Embed(
@@ -323,6 +323,50 @@ async def setup(ctx):
     await PORTA_CHANNEL.send(embed=embed5, view=view4)
 
 
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def setup_rules(ctx):
+    """Info in #infók"""
+    await ctx.message.delete()
+    await ctx.send(
+        '<:rInfo:1028725596777353287> **INFORMÁCIÓK**\nA szerver célja egy hasznos és fun hely biztosítása az egész Jedliknek.\n\n<:rChat:1028725593971380324> **SZOBÁK**\n<:pText:1028725591270244452> **Text szobák:** Ezek az általános chat szobák, ahol üzeneteket lehet küldeni. A botok parancsait is itt érheted el egy perjel (`/`) után.\n<:pVoice:1028725592683728916> **Voice szobák:** Itt lehet beszélgetni másokkal lényegében, akár kamerával is, emellett:\n__Képernyőmegosztás:__ Streamelheted az egész képernyődet, vagy csak egy alkalmazást (ilyenkor a hang is átjön).\n__Beépített chat:__ Minden voice szobához van egy beépített text szoba, ahova írhatod ha nem megy a mikrofonod.\n__Youtube Watch Together:__ Egyszerre tudsz másokkal videót nézni. Akinél van a távirányító az kezeli a lejátszást. Ez még nem mindenkinek érhető el.\n<:pAnnouncement:1028725586690060309> **Hír szobák:** Ezekre a helyekre rögzítjük a híreket, érdemes minden értesítést bekapcsolni.\n<:pForum:1028725588380356678> **Fórum szobák:** A fórum szobákat használjuk a To-do rendszerhez, itt kártyákat (feladatokat) lehet felvenni, amik rendezetten áttekinthetők. Minden kártyához tartozik egy text chat, ahol beszélni lehet róla és kommenteket írni.\n<:pStage:1028725589521211485> **Előadó szobák:** Speciális voice szobák, ahol csak pár ember beszél egyszerre, a többiek nem tudnak. Lehet "jelentkezni" (kézfeltartás gomb), és a hallgatók közül be is lehet húzni embereket az előadókhoz, hogy tudjanak beszélni.\n\n<:rRole:1028725598627049602> **SZEREPKÖRÖK**'
+    )
+    e1 = discord.Embed(
+        title="OT",
+        description="Operatív Testület tagok, aik a sulis ügyekben döntenek. Discordon ők az adminisztrátorok és a moderátorok, így kezelni tudnak igazából mindent.",
+        color=0x5865F2,
+    )
+    # DÖK, DÖK sárga vagy Emoji sárga a sticket ikonnak
+    e2 = discord.Embed(
+        title="DEV",
+        description="A Bot fejlesztői. (•\_•) ( •\_•)>⌐■-■ (⌐■\_■)",
+        color=0xE91E63,
+    )
+    e3 = discord.Embed(
+        title="Veterán",
+        description="Azok a volt tanulók, akik már elvégezték a sulit.",
+        color=0x1ABC9C,
+    )
+    e4 = discord.Embed(
+        title="Külsős",
+        description="Azok, akik nem járnak és soha nem is jártak a Jedlikbe.",
+        color=0x11806A,
+    )
+    e5 = discord.Embed(
+        title="Jedlik",
+        description="Azok a tanulók, akik a Jedlikben járnak. Külön role-juk van ami az osztályukat jelöli (pl.: 9A).",
+        color=0x3498DB,
+    )
+    await ctx.send(embed=e1)
+    await ctx.send(embed=e2)
+    await ctx.send(embed=e3)
+    await ctx.send(embed=e4)
+    await ctx.send(embed=e5)
+    await ctx.send(
+        "Ezenkívül, az eseményeknek van még role-juk, pl.: Gólyatábor, GPT, 24h. Valamint a GT posztoknak, pl.: Főszervező, Csopvez.\n\n<:rEvent:1028725595267408052> **ESEMÉNYEK**\nOT, Teadu, minden más"
+    )
+
+
 @bot.tree.command()
 async def hello(inter: discord.Interaction):
     """Hi"""
@@ -338,7 +382,7 @@ async def joined(inter: discord.Interaction, member: Optional[discord.Member] = 
     """Show when a member joined the server"""
     member = member or inter.user
     await inter.response.send_message(
-        f"> {member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
+        f"{member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
     )
 
 
@@ -346,7 +390,7 @@ async def joined(inter: discord.Interaction, member: Optional[discord.Member] = 
 async def show_join_date(inter: discord.Interaction, member: discord.Member):
     """Show when a member joined the server"""
     await inter.response.send_message(
-        f"> {member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
+        f"{member} csatlakozási ideje: {discord.utils.format_dt(member.joined_at)}"
     )
 
 
