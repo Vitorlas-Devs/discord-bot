@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-img_folder = "img\\"
+img_folder = os.getenv("IMAGE_FOLDER")
 
 MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -324,47 +324,40 @@ async def setup_verify(ctx):
     await PORTA_CHANNEL.send(embed=embed5, view=view4)
 
 
-@bot.command()
+@bot.command(name="setup")
 @commands.has_permissions(administrator=True)
 async def setup_rules(ctx):
     """Info in #infók"""
     await ctx.message.delete()
     await ctx.send(
-        '<:rInfo:1028725596777353287> **INFORMÁCIÓK**\nA szerver célja egy hasznos és fun hely biztosítása az egész Jedliknek.\n\n<:rChat:1028725593971380324> **SZOBÁK**\n<:pText:1028725591270244452> **Text szobák:** Ezek az általános chat szobák, ahol üzeneteket lehet küldeni. A botok parancsait is itt érheted el egy perjel (`/`) után.\n<:pVoice:1028725592683728916> **Voice szobák:** Itt lehet beszélgetni másokkal lényegében, akár kamerával is, emellett:\n__Képernyőmegosztás:__ Streamelheted az egész képernyődet, vagy csak egy alkalmazást (ilyenkor a hang is átjön).\n__Beépített chat:__ Minden voice szobához van egy beépített text szoba, ahova írhatod ha nem megy a mikrofonod.\n__Youtube Watch Together:__ Egyszerre tudsz másokkal videót nézni. Akinél van a távirányító az kezeli a lejátszást. Ez még nem mindenkinek érhető el.\n<:pAnnouncement:1028725586690060309> **Hír szobák:** Ezekre a helyekre rögzítjük a híreket, érdemes minden értesítést bekapcsolni.\n<:pForum:1028725588380356678> **Fórum szobák:** A fórum szobákat használjuk a To-do rendszerhez, itt kártyákat (feladatokat) lehet felvenni, amik rendezetten áttekinthetők. Minden kártyához tartozik egy text chat, ahol beszélni lehet róla és kommenteket írni.\n<:pStage:1028725589521211485> **Előadó szobák:** Speciális voice szobák, ahol csak pár ember beszél egyszerre, a többiek nem tudnak. Lehet "jelentkezni" (kézfeltartás gomb), és a hallgatók közül be is lehet húzni embereket az előadókhoz, hogy tudjanak beszélni.\n\n<:rRole:1028725598627049602> **SZEREPKÖRÖK**'
+        '<:rInfo:1028725596777353287> **INFORMÁCIÓK**\nA szerver célja egy hasznos és fun hely biztosítása az egész Jedliknek.\n\n<:rChat:1028725593971380324> **SZOBÁK**\n<:pText:1028725591270244452> **Text szobák:** Ezek az általános chat szobák, ahol üzeneteket lehet küldeni. A botok parancsait is itt érheted el egy perjel (`/`) után.\n<:pVoice:1028725592683728916> **Voice szobák:** Itt lehet beszélgetni másokkal lényegében, akár kamerával is, emellett:\n__Képernyőmegosztás:__ Streamelheted az egész képernyődet, vagy csak egy alkalmazást (ilyenkor a hang is átjön).\n__Beépített chat:__ Minden voice szobához van egy beépített text szoba, ahova írhatod ha nem megy a mikrofonod. <:catOk:1026221527299006564>\n__Youtube Watch Together:__ Egyszerre tudsz másokkal videókat nézni. Akinél van a távirányító az kezeli a lejátszást. A funkció még nem mindenkinek érhető el.\n<:pAnnouncement:1028725586690060309> **Hír szobák:** Ide rögzítjük a híreket és a fontosabb infókat, érdemes minden értesítést bekapcsolni.\n<:pForum:1028725588380356678> **Fórum szobák:** A fórum szobákat használjuk a To-do rendszerhez, itt kártyákat (feladatokat) lehet felvenni, amik rendezetten áttekinthetők. Minden kártyához tartozik egy text chat, ahol beszélni lehet róla és kommenteket írni.\n<:pStage:1028725589521211485> **Előadó szobák:** Speciális voice szobák, ahol csak pár ember beszél egyszerre, a többiek nem tudnak. Lehet "jelentkezni" (kézfeltartás gomb), és a hallgatók közül be is lehet húzni embereket az előadókhoz, hogy tudjanak beszélni.\n\n<:rRole:1028725598627049602> **SZEREPKÖRÖK**'
     )
     e1 = discord.Embed(
         title="OT",
-        description="Operatív Testület tagok, aik a sulis ügyekben döntenek. Discordon ők az adminisztrátorok és a moderátorok, így kezelni tudnak igazából mindent.",
+        description="Operatív Testület tagok, akik a sulis ügyekben döntenek. Discordon ők az adminisztrátorok és a moderátorok, így kezelni tudnak igazából mindent.",
         color=0x5865F2,
     )
-    # DÖK, DÖK sárga vagy Emoji sárga a sticket ikonnak
     e2 = discord.Embed(
-        title="DEV",
-        description="A Bot fejlesztői. (•\_•) ( •\_•)>⌐■-■ (⌐■\_■)",
-        color=0xE91E63,
+        title="DÖK",
+        description="DÖK-ös szobákhoz hozzáférés. Ez egy jó kiindulóhely, ha szervezni szeretnél eseményeket. Minden rendezvénynek külön role-ja van, mint pl. a Gólyatábor, 24h rendezvények, emellett minden GT-s posztnak is, mint a Főszervező, Csopvez, stb.",
+        color=0xF1C40F,
     )
     e3 = discord.Embed(
-        title="Veterán",
-        description="Azok a volt tanulók, akik már elvégezték a sulit.",
-        color=0x1ABC9C,
+        title="DEV",
+        description="A Bot fejlesztői. Őket lehet szabadon zaklatni ha nem működik valami, és felkeresni új funckió kérésekkel.\nA Bot kódja: https://github.com/14A-A-Lyedlik-Devs/discord-bot\nA Projekt amit használunk: https://github.com/orgs/14A-A-Lyedlik-Devs/projects/2/views/2\n(•\_•) ( •\_•)>⌐■-■ (⌐■\_■)",
+        color=0xE91E63,
     )
     e4 = discord.Embed(
-        title="Külsős",
-        description="Azok, akik nem járnak és soha nem is jártak a Jedlikbe.",
-        color=0x11806A,
-    )
-    e5 = discord.Embed(
         title="Jedlik",
-        description="Azok a tanulók, akik a Jedlikben járnak. Külön role-juk van ami az osztályukat jelöli (pl.: 9A).",
+        description=f"{JEDLIK_ROLE.mention}: Azok a tanulók, akik a Jedlikbe járnak. Külön role-juk van ami az osztályukat jelöli (pl.: 9A).\n{VETERÁN_ROLE.mention}: Azok a volt tanulók, akik már elvégezték a sulit.\n{KÜLSŐS_ROLE.mention}: Azok, akik nem járnak és soha nem is jártak a Jedlikbe.",
         color=0x3498DB,
     )
     await ctx.send(embed=e1)
     await ctx.send(embed=e2)
     await ctx.send(embed=e3)
     await ctx.send(embed=e4)
-    await ctx.send(embed=e5)
     await ctx.send(
-        "Ezenkívül, az eseményeknek van még role-juk, pl.: Gólyatábor, GPT, 24h. Valamint a GT posztoknak, pl.: Főszervező, Csopvez.\n\n<:rEvent:1028725595267408052> **ESEMÉNYEK**\nOT, Teadu, minden más"
+        "-\n\n<:rEvent:1028725595267408052> **ESEMÉNYEK**\nA Bot minden héten kiírja előre a következő eventeket:\n:white_small_square: **OT Gyűlés:** Minden __csütörtökön__ egy megbeszélést tartunk órák után. A gyűlés nyílt részén meghallgathatod mások pontjait és írhatsz is sajátot, ha van valami amit meg szeretnél beszélni, a zárt részén pedig az OT tagok vesznek részt. Itt garantáltan találkozhatsz Tanár Úrral.\n:white_small_square: **Teadu:** Változatos programokkal szolgálnak a főszervezők minden __pénteken__. Az esemény leírása folyamatosan frissítve lesz. Várunk mindenkit, aki egy jó társaságban szeretné lezárni a hetet. <a:blobParty:1026168730696286259>"
     )
 
 
