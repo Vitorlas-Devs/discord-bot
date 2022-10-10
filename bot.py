@@ -15,12 +15,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-img_folder = "./img/"
+img_folder = os.getenv("IMAGE_FOLDER")
 
 MY_GUILD = discord.Object(id=1015997406443229204)
 TOKEN = os.getenv("DISCORD_TOKEN")
-
-# START CODING HERE
 
 
 class Bot(commands.Bot):
