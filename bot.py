@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from pydoc import describe
 import subprocess
 from pathlib import Path
 import pytz
@@ -42,9 +43,10 @@ bot = Bot(command_prefix="-", intents=intents)
 @bot.event
 async def on_ready():
 
-    global LYEDLIK, OT_ROLE, DEV_ROLE, TAG_ROLE, DÖK_ROLE, JEDLIK_ROLE, VETERÁN_ROLE, KÜLSŐS_ROLE, PORTA_CHANNEL, LOG_CHANNEL, OWNER
+    global LYEDLIK, ELNÖKSÉG_ROLE, OT_ROLE, DEV_ROLE, TAG_ROLE, DÖK_ROLE, JEDLIK_ROLE, VETERÁN_ROLE, KÜLSŐS_ROLE, TEADU_ROLE, TANYABÜFÉS_ROLE, GPT_FŐSZERV_ROLE, H24FOCI_ROLE, PORTA_CHANNEL, LOG_CHANNEL, OWNER
     LYEDLIK = bot.get_guild(1015997406443229204)
 
+    ELNÖKSÉG_ROLE = LYEDLIK.get_role(1029780809617506355)
     OT_ROLE = LYEDLIK.get_role(1018451182131355728)
     DEV_ROLE = LYEDLIK.get_role(1018451781774225470)
     TAG_ROLE = LYEDLIK.get_role(1019936616262942771)
@@ -52,6 +54,10 @@ async def on_ready():
     JEDLIK_ROLE = LYEDLIK.get_role(1019649131712618558)
     VETERÁN_ROLE = LYEDLIK.get_role(1019649352374947890)
     KÜLSŐS_ROLE = LYEDLIK.get_role(1019649458461495356)
+    TEADU_ROLE = LYEDLIK.get_role(1016004331692109835)
+    TANYABÜFÉS_ROLE = LYEDLIK.get_role(1016008148814925865)
+    GPT_FŐSZERV_ROLE = LYEDLIK.get_role(1026415251127812146)
+    H24FOCI_ROLE = LYEDLIK.get_role(1022187257991528532)
 
     PORTA_CHANNEL = LYEDLIK.get_channel(1015997407265304688)
     LOG_CHANNEL = LYEDLIK.get_channel(1019666689610227834)
@@ -324,7 +330,7 @@ async def setup_verify(ctx):
     await PORTA_CHANNEL.send(embed=embed5, view=view4)
 
 
-@bot.command(name="setup")
+@bot.command()
 @commands.has_permissions(administrator=True)
 async def setup_rules(ctx):
     """Info in #infók"""
@@ -357,8 +363,39 @@ async def setup_rules(ctx):
     await ctx.send(embed=e3)
     await ctx.send(embed=e4)
     await ctx.send(
-        "-\n\n<:rEvent:1028725595267408052> **ESEMÉNYEK**\nA Bot minden héten kiírja előre a következő eventeket:\n:white_small_square: **OT Gyűlés:** Minden __csütörtökön__ egy megbeszélést tartunk órák után. A gyűlés nyílt részén meghallgathatod mások pontjait és írhatsz is sajátot, ha van valami amit meg szeretnél beszélni, a zárt részén pedig az OT tagok vesznek részt. Itt garantáltan találkozhatsz Tanár Úrral.\n:white_small_square: **Teadu:** Változatos programokkal szolgálnak a főszervezők minden __pénteken__. Az esemény leírása folyamatosan frissítve lesz. Várunk mindenkit, aki egy jó társaságban szeretné lezárni a hetet. <a:blobParty:1026168730696286259>"
+        "-\n\n<:rEvent:1028725595267408052> **ESEMÉNYEK**\nA Bot minden héten kiírja előre a következő eventeket:\n:white_small_square: **OT Gyűlés:** Minden __csütörtökön__ egy megbeszélést tartunk órák után. A gyűlés nyílt részén meghallgathatod mások pontjait és írhatsz is sajátot, ha van valami amit meg szeretnél beszélni, a zárt részén pedig az OT tagok vesznek részt. Itt garantáltan találkozhatsz Tanár Úrral.\n:white_small_square: **Teadu:** Változatos programokkal szolgálnak a főszervezők minden __pénteken__. Az esemény leírása folyamatosan frissítve lesz. Várunk mindenkit, aki egy jó társaságban szeretné lezárni a hetet. <a:blobParty:1026168730696286259>\n\n<:rCrown:1029776457045639249> **SZERVEZŐFAL**"
     )
+
+
+def fetch_members_with_role(role: discord.Role):
+    """Fetches all members with a role and returns them as a string"""
+    members = ""
+    for member in role.members:
+        members += f"{member.mention}\n"
+    return members
+
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def setup_board(ctx):
+    """Info on project leaders in #infók"""
+    await ctx.message.delete()
+    board_dict = {
+        "<:pCrown:1029779268663771227> Elnökség": ELNÖKSÉG_ROLE,
+        "🟤 Teadélután": TEADU_ROLE,
+        "🟧 GPT": GPT_FŐSZERV_ROLE,
+        "⚽ 24h foci": H24FOCI_ROLE,
+        "🍔 Büfések": TANYABÜFÉS_ROLE,
+    }
+
+    for i in range(len(board_dict)):
+        e = discord.Embed(
+            title=f"{list(board_dict.keys())[i]}",
+            description=f"{list(board_dict.values())[i].mention}\n----------\n{fetch_members_with_role(list(board_dict.values())[i])}",
+            color=0x070606,
+        )
+        await ctx.send(embed=e)
+
 
 
 @bot.tree.command()
