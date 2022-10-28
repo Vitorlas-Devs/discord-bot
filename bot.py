@@ -85,22 +85,22 @@ async def on_member_join(member):
     await member.add_roles(TAG_ROLE)
 
 
-@bot.event
-async def on_scheduled_event_update(before, after):
-    if (
-        after.name in ["OT Gyűlés", "Teadu"]
-        and after.status == discord.EventStatus.completed
-    ):
-        image = await after.cover_image.read()
-        await LYEDLIK.create_scheduled_event(
-            name=after.name,
-            description="",
-            start_time=after.start_time + datetime.timedelta(days=7),
-            end_time=after.end_time + datetime.timedelta(days=7),
-            image=image,
-            location=after.location,
-        )
-        await event_invite(after)
+# @bot.event
+# async def on_scheduled_event_update(before, after):
+#     if (
+#         after.name in ["OT Gyűlés", "Teadu"]
+#         and after.status == discord.EventStatus.completed
+#     ):
+#         image = await after.cover_image.read()
+#         await LYEDLIK.create_scheduled_event(
+#             name=after.name,
+#             description="",
+#             start_time=after.start_time + datetime.timedelta(days=7),
+#             end_time=after.end_time + datetime.timedelta(days=7),
+#             image=image,
+#             location=after.location,
+#         )
+#         await event_invite(after)
 
 
 @dev_group.command()
